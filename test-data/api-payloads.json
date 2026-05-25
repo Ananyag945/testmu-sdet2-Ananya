@@ -1,0 +1,56 @@
+{
+  "create": [
+    {
+      "name": "Regression Suite A",
+      "type": "automated",
+      "owner": "QA Team",
+      "itemsCount": 42
+    },
+    {
+      "name": "Sanity Tests B",
+      "type": "automated",
+      "owner": "DevOps",
+      "itemsCount": 15
+    },
+    {
+      "name": "Manual Exploratory C",
+      "type": "manual",
+      "owner": "Product",
+      "itemsCount": 8
+    }
+  ],
+  "update": {
+    "name": "Updated Suite Alpha",
+    "type": "automated",
+    "owner": "QA Core",
+    "itemsCount": 50
+  },
+  "invalid": [
+    {
+      "description": "Missing required field (name)",
+      "payload": {
+        "type": "automated",
+        "owner": "QA Team",
+        "itemsCount": 10
+      }
+    },
+    {
+      "description": "Invalid data type (itemsCount is string instead of number)",
+      "payload": {
+        "name": "Type Fault Suite",
+        "type": "automated",
+        "owner": "QA Team",
+        "itemsCount": "invalid-string-type"
+      }
+    },
+    {
+      "description": "Oversized string payload (name exceeds length constraints)",
+      "payload": {
+        "name": "OversizedSuiteNameStringVaryingExtremelyLongCharacterConstraintTestingSequenceThatExceedsTwoHundredAndFiftyFiveCharacterLimitsInDatabaseSchemaVerificationTestsThisFieldMustBeRejectedByTheApiValidationPipelineImmediatelyToPreventOverflows",
+        "type": "automated",
+        "owner": "QA Team",
+        "itemsCount": 3
+      }
+    }
+  ]
+}

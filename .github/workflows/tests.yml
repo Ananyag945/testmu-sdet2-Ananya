@@ -1,0 +1,134 @@
+# Why Option A over Option B: CI pipeline provides immediate, automated signal on every
+# push/PR — the primary need for a daily-shipping team. A dashboard adds value once the
+# signal is trusted; the pipeline is what builds that trust.
+
+name: Playwright Test Automation CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  statuses: write
+
+jobs:
+  install:
+    name: 📦 Package Setup & Install
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache Node Modules & Playwright Cache
+        id: node-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Clean Install Dependencies
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Install Playwright Browsers with Dependencies
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps
+
+  test:
+    name: 🧪 Run Sharded Tests (${{ matrix.shard }})
+    needs: install
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ['1/3', '2/3', '3/3']
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Restore Node Modules & Playwright Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Run Playwright Tests (Shard ${{ matrix.shard }})
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+          CI: true
+        # We output blob reports during the sharded runs to merge them in the next job
+        run: npx playwright test --shard=${{ matrix.shard }} --reporter=blob
+
+      - name: Clean Shard String for Artifact Naming
+        if: always()
+        id: shard-name
+        run: echo "name=$(echo '${{ matrix.shard }}' | sed 's/\//-/'g)" >> $GITHUB_OUTPUT
+
+      - name: Upload Shard Blob Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blob-report-${{ steps.shard-name.outputs.name }}
+          path: blob-report/
+          retention-days: 2
+
+  report:
+    name: 📊 Merge & Publish HTML Reports
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Restore Node Modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Download all Shard Blob Reports
+        uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports/
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge Blob Reports into Single HTML Report
+        run: npx playwright merge-reports --reporter html all-blob-reports/
+
+      - name: Upload Unified HTML Test Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

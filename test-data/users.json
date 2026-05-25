@@ -1,0 +1,37 @@
+[
+  {
+    "label": "Valid Admin User",
+    "email": "admin@example.com",
+    "password": "securepassword",
+    "role": "admin",
+    "expectedOutcome": "success"
+  },
+  {
+    "label": "Valid Reader User",
+    "email": "reader@example.com",
+    "password": "readerpassword",
+    "role": "reader",
+    "expectedOutcome": "success"
+  },
+  {
+    "label": "Invalid Credentials - Wrong Password",
+    "email": "admin@example.com",
+    "password": "wrongpassword",
+    "role": "admin",
+    "expectedOutcome": "invalid_credentials"
+  },
+  {
+    "label": "Invalid Credentials - Nonexistent User",
+    "email": "nonexistent@example.com",
+    "password": "somepassword",
+    "role": "reader",
+    "expectedOutcome": "invalid_credentials"
+  },
+  {
+    "label": "Suspended Access - Locked Account",
+    "email": "locked@example.com",
+    "password": "lockedpassword",
+    "role": "editor",
+    "expectedOutcome": "account_locked"
+  }
+]
