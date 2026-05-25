@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>sdet2_manual</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<h1 id="enterprise-playwright-sharded-framework-sdet-2">Enterprise
+Playwright Sharded Framework (SDET-2)</h1>
+<p>This manual acts as a comprehensive reference guide for the
+<strong>Enterprise Playwright Sharded Framework (SDET-2)</strong>.
+Whether you are prepping for a recruiter call or facing a staff-level
+technical grill, this document breaks down every component,
+architectural decision, and code structure of your automation
+framework.</p>
+<hr />
+<h2 id="the-60-second-pitch">1. The 60-Second Pitch</h2>
+<h3 id="the-core-explanation">The Core Explanation</h3>
+<p>This project is an automated testing framework (a collection of code
+files designed to run tests automatically). It verifies both the user
+interface (the visual screens that customers interact with) and the API
+(the backend data services that power those screens) for an enterprise
+web application. It solves a critical problem: in modern software teams
+that deliver new updates multiple times a day, manual testing is too
+slow. This framework runs tests automatically across multiple browsers
+in parallel (at the same time), ensuring that code modifications do not
+break existing features, all without slowing down the development
+team.</p>
+<h3 id="the-interview-pitch">The Interview Pitch</h3>
+<p>“I designed and built a highly resilient, sharded test automation
+framework using Playwright and TypeScript, structured around a strict
+Page Object Model (POM — a design pattern that separates page elements
+and user actions from the actual test assertions). It handles
+authentication efficiently by serializing (saving) browser session
+states, allowing parallel execution threads to completely bypass
+repetitive login steps. To prevent external environment instability from
+causing false failures, I engineered a state-synchronized local mock
+engine that intercepts browser calls and API requests, mirroring backend
+database operations locally. The framework is fully integrated into a
+GitHub Actions pipeline, which uses a 3-worker matrix to shard (split)
+the execution load, reducing the total CI (Continuous Integration — an
+automated pipeline that builds, tests, and validates code updates)
+feedback loop from minutes to seconds.”</p>
+<hr />
+<h2 id="the-problem-it-solves">2. The Problem It Solves</h2>
+<h3 id="the-pain-of-modern-fast-shipping-teams">The Pain of Modern
+Fast-Shipping Teams</h3>
+<p>In high-velocity software engineering, developer teams ship new
+features daily. Every new release introduces a major risk of regressions
+(new code changes accidentally breaking old features). For example, a
+minor update in a database table could silently break the billing
+screen.</p>
+<p>If a QA (Quality Assurance — the team responsible for verifying
+software health) team relies entirely on manual testing, two major
+bottlenecks occur: * <strong>The Manual Bottleneck</strong>: Manually
+clicking through all billing and onboarding options takes hours,
+creating a massive blocker that delays deployments. * <strong>The
+Flakiness Bottleneck</strong>: Simple automated scripts often click
+buttons before the browser finishes loading, leading to false failures
+(flaky tests) that erode the team’s trust in the automated checks.</p>
+<h3 id="why-simple-record-and-play-tools-fail">Why Simple
+Record-and-Play Tools Fail</h3>
+<p>Many beginners start with record-and-play browser extensions (like
+Selenium IDE). While simple to start, they fail completely in
+professional teams: * <strong>Brittle Locators</strong>: They locate
+elements using raw absolute paths (like
+<code>/html/body/div[1]/span/button</code>), which break the moment a
+developer shifts a button slightly. * <strong>Static Waits</strong>:
+They handle loading screens by adding hardcoded sleeps (like pausing the
+script for 5 seconds). If the page loads in 1 second, you waste 4
+seconds; if it takes 6 seconds, the test fails. * <strong>No
+Reusability</strong>: If the login screen changes, a record-and-play
+suite requires re-recording every single test file individually.</p>
+<h3 id="who-consumes-this-system">Who Consumes This System?</h3>
+<p>This framework delivers quality feedback to three key groups: 1.
+<strong>Developers</strong>: They receive instant PR (Pull Request — a
+request to merge new code changes into the main branch) feedback. If
+their code introduces a regression, the CI pipeline fails immediately,
+showing them exactly which line broke. 2. <strong>Quality
+Engineers</strong>: They use the unified HTML and Allure report
+dashboards to track flakiness trends and monitor test stability. 3.
+<strong>Product Managers</strong>: They review passing test reports to
+confirm that release candidates meet business requirements before
+shipping to production.</p>
+<hr />
+<h2 id="the-full-stack-every-tool-explained-like-youre-five">3. The Full
+Stack — Every Tool, Explained Like You’re Five</h2>
+<h3 id="playwright">3.1 Playwright</h3>
+<h4 id="what-it-is">3.1.1 What It Is</h4>
+<p>Playwright is a modern browser automation library developed by
+Microsoft. It allows developers to control Chromium (Chrome), Firefox,
+and WebKit (Safari) programmatically. It executes actions directly
+inside the browser using direct debugger protocols.</p>
+<h4 id="real-world-analogy">3.1.2 Real-World Analogy</h4>
+<p>Playwright is like a remote-controlled mechanical hand that can
+click, type, and read web pages at superhuman speeds, using internal
+sensors to wait exactly until a button is visible before trying to press
+it.</p>
+<h4 id="why-this-project-uses-it">3.1.3 Why This Project Uses It</h4>
+<p>We chose Playwright because it is faster than Selenium, handles
+multiple browser tabs naturally, and includes native support for network
+routing (intercepting and modifying browser API calls directly).</p>
+<h4 id="what-would-break-if-removed">3.1.4 What Would Break if
+Removed</h4>
+<p>We would lose the ability to launch web browsers, navigate to pages,
+input values, and click buttons. Our UI and integration tests would be
+completely inoperable.</p>
+<h4 id="alternatives-and-trade-offs">3.1.5 Alternatives and
+Trade-offs</h4>
+<ul>
+<li><strong>Selenium</strong>: The industry standard for decades. It is
+much slower than Playwright and requires setting up separate browser
+drivers.</li>
+<li><strong>Cypress</strong>: Popular for front-end testing. However, it
+runs inside the browser sandbox, which limits its ability to handle
+multiple tabs, pop-ups, and native parallel sharding.</li>
+</ul>
+<h4 id="the-interviewers-question">3.1.6 The Interviewer’s Question</h4>
+<ul>
+<li><strong>Question</strong>: “How does Playwright handle element
+loading compared to older tools like Selenium?”</li>
+<li><strong>Answer</strong>: Playwright uses auto-waiting. It checks
+actionability criteria (such as visibility, stability, and clickability)
+on elements automatically before executing actions, removing the need
+for manual sleeps.</li>
+</ul>
+<hr />
+<h3 id="typescript">3.2 TypeScript</h3>
+<h4 id="what-it-is-1">3.2.1 What It Is</h4>
+<p>TypeScript is a strongly-typed programming language that builds on
+top of JavaScript. It adds static types (explicitly defining whether a
+variable must be a string, a number, or a custom object) to the code
+before it runs.</p>
+<h4 id="real-world-analogy-1">3.2.2 Real-World Analogy</h4>
+<p>TypeScript is like an electronic spelling checker for your
+blueprints. It prevents you from accidentally trying to fit a square peg
+into a round hole before you actually start building.</p>
+<h4 id="why-this-project-uses-it-1">3.2.3 Why This Project Uses It</h4>
+<p>It enforces type safety across our test suites. When working with
+complex JSON (JavaScript Object Notation — a standard text format for
+storing data structures) data and API payloads, TypeScript warns us at
+compile time if we write a typo or pass incorrect data.</p>
+<h4 id="what-would-break-if-removed-1">3.2.4 What Would Break if
+Removed</h4>
+<p>The framework would fall back to standard JavaScript. Typos in
+selector names, API endpoints, or test data parameters would go
+unnoticed until the tests actively crashed during runtime.</p>
+<h4 id="alternatives-and-trade-offs-1">3.2.5 Alternatives and
+Trade-offs</h4>
+<ul>
+<li><strong>Vanilla JavaScript</strong>: Faster to write initially, but
+scales poorly. Large codebases quickly become difficult to maintain
+because there are no compile-time checks.</li>
+</ul>
+<h4 id="the-interviewers-question-1">3.2.6 The Interviewer’s
+Question</h4>
+<ul>
+<li><strong>Question</strong>: “What are the advantages of using
+TypeScript interface and type mappings in a Page Object Model
+framework?”</li>
+<li><strong>Answer</strong>: It ensures that all page components and
+helpers receive precisely formatted parameters. The editor provides
+autocomplete suggestions for locators and methods, preventing syntax
+bugs during test development.</li>
+</ul>
+<hr />
+<h3 id="allure">3.3 Allure</h3>
+<h4 id="what-it-is-2">3.3.1 What It Is</h4>
+<p>Allure is an open-source, highly visual framework for generating test
+execution reports. It collects test results and compiles them into an
+interactive HTML dashboard containing histories, failure steps, and
+attachments.</p>
+<h4 id="real-world-analogy-2">3.3.2 Real-World Analogy</h4>
+<p>Allure is like an automated flight data recorder. It logs every
+action of the flight and produces a clean, readable graph showing
+exactly when, where, and why a malfunction occurred.</p>
+<h4 id="why-this-project-uses-it-2">3.3.3 Why This Project Uses It</h4>
+<p>It provides the team with a clear, readable report. It formats
+failures cleanly, attaches screenshots and videos automatically, and
+groups test results by features.</p>
+<h4 id="what-would-break-if-removed-2">3.3.4 What Would Break if
+Removed</h4>
+<p>The tests would still run, but the results would only be visible as
+raw text inside the terminal window, making it difficult for the team to
+review and debug failures.</p>
+<h4 id="alternatives-and-trade-offs-2">3.3.5 Alternatives and
+Trade-offs</h4>
+<ul>
+<li><strong>Default Playwright HTML Reporter</strong>: Lightweight and
+clean, but lacks advanced features like historical trend analysis,
+category grouping, and step-by-step metric logging.</li>
+</ul>
+<h4 id="the-interviewers-question-2">3.3.6 The Interviewer’s
+Question</h4>
+<ul>
+<li><strong>Question</strong>: “How does your framework ensure that
+failures in CI are easy to debug using Allure?”</li>
+<li><strong>Answer</strong>: The configuration files instruct Playwright
+to capture screenshots, record video sessions, and save execution traces
+exclusively for failing tests, embedding these artifacts directly into
+the Allure report.</li>
+</ul>
+<hr />
+<h3 id="zod-schema-validation">3.4 Zod (Schema Validation)</h3>
+<h4 id="what-it-is-3">3.4.1 What It Is</h4>
+<p>Zod is a TypeScript-first schema declaration and validation library.
+It defines the exact structure that a data object must match and
+validates payloads in real-time.</p>
+<h4 id="real-world-analogy-3">3.4.2 Real-World Analogy</h4>
+<p>Zod is like a template gate at a factory. If a part doesn’t match the
+exact measurements specified by the template, the gate rejects it
+instantly.</p>
+<h4 id="why-this-project-uses-it-3">3.4.3 Why This Project Uses It</h4>
+<p>It handles environment variable validation at startup, ensuring the
+framework fails immediately if required variables are missing. It is
+also used to validate that API responses strictly match the expected
+database structure.</p>
+<h4 id="what-would-break-if-removed-3">3.4.4 What Would Break if
+Removed</h4>
+<p>The framework would lose its “fail-fast” safety guard. If an API
+contract (the expected format of an API response) changed silently,
+tests might continue to pass with empty values instead of flagging the
+mismatch immediately.</p>
+<h4 id="alternatives-and-trade-offs-3">3.4.5 Alternatives and
+Trade-offs</h4>
+<ul>
+<li><strong>Manual object validation</strong>: Writing long conditional
+checks (like
+<code>if (!data.name || typeof data.id !== 'string')</code>) for every
+field. This is tedious, verbose, and difficult to maintain.</li>
+</ul>
+<h4 id="the-interviewers-question-3">3.4.6 The Interviewer’s
+Question</h4>
+<ul>
+<li><strong>Question</strong>: “Why use Zod validation at the API
+response assertion layer instead of simple assertion checks?”</li>
+<li><strong>Answer</strong>: Zod validates the entire structural
+integrity and data types of the response body at once, catching silent
+backend changes (such as a number becoming a string) that standard
+status code checks miss.</li>
+</ul>
+<hr />
+<h3 id="github-actions">3.5 GitHub Actions</h3>
+<h4 id="what-it-is-4">3.5.1 What It Is</h4>
+<p>GitHub Actions is a CI/CD platform that automates software workflows
+directly inside GitHub. It triggers tasks (like running tests) on events
+like pushing new code or opening pull requests.</p>
+<h4 id="real-world-analogy-4">3.5.2 Real-World Analogy</h4>
+<p>GitHub Actions is like an automated quality gatekeeper at a
+manufacturing plant. Every time a worker brings a new part, the
+gatekeeper automatically runs it through a series of tests before
+allowing it onto the assembly line.</p>
+<h4 id="why-this-project-uses-it-4">3.5.3 Why This Project Uses It</h4>
+<p>It runs our test suite automatically on every push or pull request to
+the <code>main</code> branch, sharding execution across parallel virtual
+machines (VMs) to ensure fast, continuous feedback.</p>
+<h4 id="what-would-break-if-removed-4">3.5.4 What Would Break if
+Removed</h4>
+<p>The automation suite could only be executed manually on developer
+machines. We would lose automated build verification and pull request
+gating.</p>
+<h4 id="alternatives-and-trade-offs-4">3.5.5 Alternatives and
+Trade-offs</h4>
+<ul>
+<li><strong>Jenkins</strong>: A highly customizable classic. However, it
+requires maintaining a dedicated physical server, whereas GitHub Actions
+is fully managed in the cloud.</li>
+</ul>
+<h4 id="the-interviewers-question-4">3.5.6 The Interviewer’s
+Question</h4>
+<ul>
+<li><strong>Question</strong>: “Why did you select Option A (CI/CD
+Pipeline) over Option B (Analytics Dashboard) for your Quality
+integration task?”</li>
+<li><strong>Answer</strong>: For a team that deploys daily, immediate
+automated feedback on every pull request is critical. A CI pipeline
+serves as a blocker that prevents broken code from ever merging,
+establishing a foundation of trust.</li>
+</ul>
+<hr />
+<h3 id="playwright-routing-page.route">3.6 Playwright Routing
+(<code>page.route</code>)</h3>
+<h4 id="what-it-is-5">3.6.1 What It Is</h4>
+<p>Playwright Routing is a native feature that intercepts network
+requests initiated by a browser page. It allows developers to mock
+responses (return simulated data) instead of hitting a live backend
+server.</p>
+<h4 id="real-world-analogy-5">3.6.2 Real-World Analogy</h4>
+<p>Playwright Routing is like putting a call interceptor on a phone
+line. When the phone dials a number, the interceptor catches the call
+and speaks with a pre-recorded voice, so the call never actually leaves
+the building.</p>
+<h4 id="why-this-project-uses-it-5">3.6.3 Why This Project Uses It</h4>
+<p>It enables offline testing. By intercepting browser calls, we can
+mock the entire user interface, settings form, and database reports,
+allowing the suites to run successfully even without a live backend
+deployment.</p>
+<h4 id="what-would-break-if-removed-5">3.6.4 What Would Break if
+Removed</h4>
+<p>The UI and integration tests would fail immediately on clean runners
+unless we deployed, maintained, and connected to a live, fully
+functional backend database server.</p>
+<h4 id="alternatives-and-trade-offs-5">3.6.5 Alternatives and
+Trade-offs</h4>
+<ul>
+<li><strong>Live Test Server</strong>: More realistic, but introduces
+dependencies on database state stability, network latency, and server
+maintenance costs.</li>
+</ul>
+<h4 id="the-interviewers-question-5">3.6.6 The Interviewer’s
+Question</h4>
+<ul>
+<li><strong>Question</strong>: “What are the advantages of using native
+page.route over mock servers like WireMock or MSW?”</li>
+<li><strong>Answer</strong>: Native routing requires no extra processes
+or port configurations. It is executed directly inside the browser
+session by Playwright, making it extremely fast, reliable, and
+lightweight.</li>
+</ul>
+<hr />
+<h2 id="architecture-how-the-pieces-fit-together">4. Architecture — How
+the Pieces Fit Together</h2>
+<h3 id="end-to-end-test-execution-flow">End-to-End Test Execution
+Flow</h3>
+<pre class="mermaid"><code>graph TD
+    Spec[Test Specs: tests/] --&gt;|1. Request Fixture| Fixture[Custom Fixtures: auth.fixtures.ts]
+    Fixture --&gt;|2. Injects Mock Routes| PageInstance[Playwright Page Instance]
+    Spec --&gt;|3. Call Actions| POM[Page Objects: src/pages/]
+    POM --&gt;|4. Interact| PageInstance
+    Spec --&gt;|5. Call API| API[ApiClient: src/api/]
+    
+    subgraph Mock Sandbox Environment
+        PageInstance --&gt;|6. Intercepts UI Requests| LocalRouter[Mock Router in auth.fixtures.ts]
+        API --&gt;|7. Intercepts API Requests| MockClient[Mock Router in ApiClient.ts]
+        LocalRouter --&gt;|8. Reads / Writes State| DB[(In-Memory Database: mockDb.ts)]
+        MockClient --&gt;|9. Reads / Writes State| DB
+    end
+    
+    style DB fill:#f9f,stroke:#333,stroke-width:2px</code></pre>
+<ul>
+<li><strong>Test Specs to Custom Fixtures</strong>: The spec file
+requests the <code>authenticatedPage</code> fixture to obtain a
+pre-authenticated browser session.</li>
+<li><strong>Custom Fixtures to Page Instance</strong>: The custom
+fixture configures standard browser routes and injects interceptors
+directly into the active browser page.</li>
+<li><strong>Test Specs to Page Objects / ApiClient</strong>: The test
+script triggers actions using Page Object helper methods (e.g.,
+<code>loginPage.login()</code>) or API Client requests (e.g.,
+<code>apiClient.post()</code>).</li>
+<li><strong>Page Objects to Page Instance</strong>: Page Objects
+translate structural methods into browser actions
+(e.g. <code>page.fill()</code>) executed against the running browser DOM
+(Document Object Model — the structural representation of HTML
+elements).</li>
+<li><strong>Page Instance / ApiClient to Mock Routers</strong>:
+Playwright intercepts browser requests and API Client queries, checking
+if the base URL matches placeholder domains.</li>
+<li><strong>Mock Routers to In-Memory DB</strong>: The mock router
+processes the incoming action, runs logical database checks, and reads
+or writes data directly to our synchronized local memory arrays.</li>
+</ul>
+<hr />
+<h3 id="cicd-deployment-view">CI/CD Deployment View</h3>
+<pre class="mermaid"><code>graph LR
+    Trigger[Code Push / Pull Request] --&gt;|Triggers Workflow| Install[📦 Install Job]
+    Install --&gt;|Caches node_modules &amp; Playwright| Cache[(GitHub Actions Cache)]
+    Cache --&gt;|Restores Dependencies| Tests[🧪 Matrix Test Shards]
+    
+    subgraph 3-Worker Parallel Execution
+        Tests --&gt;|Shard 1/3| Job1[Run Shard 1]
+        Tests --&gt;|Shard 2/3| Job2[Run Shard 2]
+        Tests --&gt;|Shard 3/3| Job3[Run Shard 3]
+    end
+    
+    Job1 --&gt;|Uploads blob-report-1-3| Art[(Artifact Storage)]
+    Job2 --&gt;|Uploads blob-report-2-3| Art
+    Job3 --&gt;|Uploads blob-report-3-3| Art
+    
+    Art --&gt;|Downloads all Blobs| Merge[📊 Report Job]
+    Merge --&gt;|Runs playwright merge-reports| HTML[Unified HTML Report]
+    
+    style Art fill:#bbf,stroke:#333,stroke-width:2px</code></pre>
+<ul>
+<li><strong>Trigger to Install Job</strong>: The GitHub Actions runner
+detects a code push or PR targeting <code>main</code> and starts the
+workflow.</li>
+<li><strong>Install Job to Cache</strong>: The install job performs a
+clean setup and caches the downloaded modules and browser binaries.</li>
+<li><strong>Cache to Matrix Test Shards</strong>: Parallel runners
+restore the dependencies from the cache to bypass installation
+times.</li>
+<li><strong>Matrix Shards to Job Runs</strong>: The matrix divides the
+test files across three parallel VM workers.</li>
+<li><strong>Job Runs to Artifact Storage</strong>: Each worker runs its
+assigned tests, records execution metrics, and uploads a zipped blob
+report.</li>
+<li><strong>Artifact Storage to Report Job</strong>: The reporting job
+downloads all three shard blob reports.</li>
+<li><strong>Report Job to HTML</strong>: Playwright merges the blob
+reports, producing a unified HTML report dashboard.</li>
+</ul>
+<hr />
+<h2 id="repository-structure-a-guided-tour">5. Repository Structure — A
+Guided Tour</h2>
+<h3 id="repository-tree">Repository Tree</h3>
+<pre><code>testmu-sdet2-Ananya/
+├── .github/
+│   └── workflows/
+│       └── tests.yml            # Pipeline automating sharded execution runs
+├── config/
+│   └── env.config.ts            # Configuration system verifying environment variables
+├── src/
+│   ├── pages/
+│   │   ├── BasePage.ts          # POM base class handling navigation and load states
+│   │   ├── LoginPage.ts         # Authentication POM managing login selectors
+│   │   └── DashboardPage.ts     # Dashboard POM managing settings forms and tabs
+│   ├── api/
+│   │   └── ApiClient.ts         # HTTP client wrapper with built-in mock fallback
+│   ├── fixtures/
+│   │   └── auth.fixtures.ts     # Injects mock routing and handles session caching
+│   └── utils/
+│       ├── retry.ts             # exponential backoff utility to prevent flakiness
+│       ├── wait.ts              # Custom poll waiting helpers that avoid sleeps
+│       ├── assertions.ts        # Custom validations checking response schemas and latency
+│       └── mockDb.ts            # Local data store synchronizing UI and API states
+├── tests/
+│   ├── ui/
+│   │   ├── login.spec.ts        # UI validation suite for authentication
+│   │   ├── dashboard.spec.ts    # UI validation suite for dashboard elements
+│   │   └── forms.spec.ts        # UI validation suite for dashboard settings forms
+│   ├── api/
+│   │   ├── auth.api.spec.ts     # API validation suite for sign-in responses
+│   │   ├── crud.api.spec.ts     # API validation suite for resource lifecycles
+│   │   └── error-handling.api.spec.ts # API validation suite for boundary statuses
+│   └── integration/
+│       └── create-and-verify.spec.ts # Hybrid test seeding via API and verifying in UI
+├── test-data/
+│   ├── users.json               # JSON data containing authentication scenarios
+│   └── api-payloads.json        # JSON data containing API CRUD payload scenarios
+├── docs/
+│   ├── test-strategy.md         # Document mapping testing strategy and QA roadmaps
+│   └── ai-usage-log.md          # Document mapping AI usage details
+├── .env.example                 # Template for required environment variables
+├── .gitignore                   # Excludes dependencies and local reports from git
+├── package.json                 # Project dependencies, scripts, and details
+├── playwright.config.ts         # Central configuration for Playwright execution
+├── tsconfig.json                # TypeScript compilation parameters
+└── README.md                    # Core repository documentation and guide</code></pre>
+<hr />
+<h3 id="important-files-tour">Important Files Tour</h3>
+<h4 id="playwright.config.ts">1. <code>playwright.config.ts</code></h4>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { defineConfig<span class="op">,</span> devices } <span class="im">from</span> <span class="st">&#39;@playwright/test&#39;</span><span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { envConfig } <span class="im">from</span> <span class="st">&#39;./config/env.config&#39;</span><span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> <span class="fu">defineConfig</span>({</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  testDir<span class="op">:</span> <span class="st">&#39;./tests&#39;</span><span class="op">,</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  fullyParallel<span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  forbidOnly<span class="op">:</span> <span class="op">!!</span><span class="bu">process</span><span class="op">.</span><span class="at">env</span><span class="op">.</span><span class="at">CI</span><span class="op">,</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  retries<span class="op">:</span> <span class="bu">process</span><span class="op">.</span><span class="at">env</span><span class="op">.</span><span class="at">CI</span> <span class="op">?</span> <span class="dv">2</span> <span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  workers<span class="op">:</span> <span class="bu">process</span><span class="op">.</span><span class="at">env</span><span class="op">.</span><span class="at">CI</span> <span class="op">?</span> <span class="dv">3</span> <span class="op">:</span> <span class="dt">undefined</span><span class="op">,</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  reporter<span class="op">:</span> [</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    [<span class="st">&#39;html&#39;</span><span class="op">,</span> { open<span class="op">:</span> <span class="st">&#39;never&#39;</span> }]<span class="op">,</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    [<span class="st">&#39;allure-playwright&#39;</span><span class="op">,</span> { detail<span class="op">:</span> <span class="kw">true</span> }]</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  ]<span class="op">,</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  use<span class="op">:</span> {</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    baseURL<span class="op">:</span> envConfig<span class="op">.</span><span class="at">baseUrl</span><span class="op">,</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    trace<span class="op">:</span> <span class="st">&#39;retain-on-failure&#39;</span><span class="op">,</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    screenshot<span class="op">:</span> <span class="st">&#39;only-on-failure&#39;</span><span class="op">,</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    video<span class="op">:</span> <span class="st">&#39;retain-on-failure&#39;</span><span class="op">,</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  projects<span class="op">:</span> [</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    { name<span class="op">:</span> <span class="st">&#39;chromium&#39;</span><span class="op">,</span> use<span class="op">:</span> { <span class="op">...</span>devices[<span class="st">&#39;Desktop Chrome&#39;</span>] } }<span class="op">,</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    { name<span class="op">:</span> <span class="st">&#39;firefox&#39;</span><span class="op">,</span> use<span class="op">:</span> { <span class="op">...</span>devices[<span class="st">&#39;Desktop Firefox&#39;</span>] } }<span class="op">,</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  ]<span class="op">,</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<ul>
+<li><strong>Line-by-Line Explanation</strong>:
+<ul>
+<li><code>fullyParallel: true</code> enables parallel execution for all
+tests.</li>
+<li><code>forbidOnly: !!process.env.CI</code> fails the build in CI if a
+developer left a <code>test.only</code> filter in their code.</li>
+<li><code>retries: process.env.CI ? 2 : 0</code> configures 2 automatic
+retries in CI to catch flaky failures.</li>
+<li><code>workers: process.env.CI ? 3 : undefined</code> allocates 3
+parallel execution threads in CI.</li>
+<li><code>reporter</code> configures both the standard Playwright HTML
+report and the Allure report generator.</li>
+<li><code>use: { baseURL: envConfig.baseUrl ... }</code> sets the target
+web URL dynamically from our environment config.</li>
+<li><code>trace: 'retain-on-failure'</code>, <code>screenshot</code>,
+and <code>video</code> instruct Playwright to capture debugging details
+only when a test fails, minimizing storage overhead in CI.</li>
+<li><code>projects</code> configures the test suite to run across both
+Chromium and Firefox.</li>
+</ul></li>
+</ul>
+<h4 id="configenv.config.ts">2. <code>config/env.config.ts</code></h4>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="st">&#39;dotenv/config&#39;</span><span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { z } <span class="im">from</span> <span class="st">&#39;zod&#39;</span><span class="op">;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> getEnvVal <span class="op">=</span> (key<span class="op">:</span> <span class="dt">string</span><span class="op">,</span> defaultValue<span class="op">:</span> <span class="dt">string</span>)<span class="op">:</span> <span class="dt">string</span> <span class="kw">=&gt;</span> {</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> val <span class="op">=</span> <span class="bu">process</span><span class="op">.</span><span class="at">env</span>[key]<span class="op">;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (val <span class="op">&amp;&amp;</span> val<span class="op">.</span><span class="fu">trim</span>() <span class="op">!==</span> <span class="st">&#39;&#39;</span>) <span class="op">?</span> val <span class="op">:</span> defaultValue<span class="op">;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> envSchema <span class="op">=</span> z<span class="op">.</span><span class="fu">object</span>({</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  BASE_URL<span class="op">:</span> z<span class="op">.</span><span class="fu">string</span>()<span class="op">.</span><span class="fu">url</span>()<span class="op">,</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  API_BASE_URL<span class="op">:</span> z<span class="op">.</span><span class="fu">string</span>()<span class="op">.</span><span class="fu">url</span>()<span class="op">,</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  TEST_USER_EMAIL<span class="op">:</span> z<span class="op">.</span><span class="fu">string</span>()<span class="op">.</span><span class="fu">email</span>()<span class="op">,</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  TEST_USER_PASSWORD<span class="op">:</span> z<span class="op">.</span><span class="fu">string</span>()<span class="op">.</span><span class="fu">min</span>(<span class="dv">1</span>)<span class="op">,</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  CI<span class="op">:</span> z<span class="op">.</span><span class="at">coerce</span><span class="op">.</span><span class="fu">boolean</span>()<span class="op">.</span><span class="fu">default</span>(<span class="kw">false</span>)<span class="op">,</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> parseResult <span class="op">=</span> envSchema<span class="op">.</span><span class="fu">safeParse</span>({</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  BASE_URL<span class="op">:</span> <span class="fu">getEnvVal</span>(<span class="st">&#39;BASE_URL&#39;</span><span class="op">,</span> <span class="st">&#39;https://app.example.com&#39;</span>)<span class="op">,</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  API_BASE_URL<span class="op">:</span> <span class="fu">getEnvVal</span>(<span class="st">&#39;API_BASE_URL&#39;</span><span class="op">,</span> <span class="st">&#39;https://api.example.com&#39;</span>)<span class="op">,</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  TEST_USER_EMAIL<span class="op">:</span> <span class="fu">getEnvVal</span>(<span class="st">&#39;TEST_USER_EMAIL&#39;</span><span class="op">,</span> <span class="st">&#39;admin@example.com&#39;</span>)<span class="op">,</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  TEST_USER_PASSWORD<span class="op">:</span> <span class="fu">getEnvVal</span>(<span class="st">&#39;TEST_USER_PASSWORD&#39;</span><span class="op">,</span> <span class="st">&#39;securepassword&#39;</span>)<span class="op">,</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  CI<span class="op">:</span> <span class="fu">getEnvVal</span>(<span class="st">&#39;CI&#39;</span><span class="op">,</span> <span class="st">&#39;false&#39;</span>)<span class="op">,</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="op">!</span>parseResult<span class="op">.</span><span class="at">success</span>) {</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">Error</span>(<span class="st">&quot;❌ Invalid environment configuration.&quot;</span>)<span class="op">;</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> envConfig <span class="op">=</span> {</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  baseUrl<span class="op">:</span> parseResult<span class="op">.</span><span class="at">data</span><span class="op">.</span><span class="at">BASE_URL</span><span class="op">,</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  apiBaseUrl<span class="op">:</span> parseResult<span class="op">.</span><span class="at">data</span><span class="op">.</span><span class="at">API_BASE_URL</span><span class="op">,</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  credentials<span class="op">:</span> {</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    email<span class="op">:</span> parseResult<span class="op">.</span><span class="at">data</span><span class="op">.</span><span class="at">TEST_USER_EMAIL</span><span class="op">,</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    password<span class="op">:</span> parseResult<span class="op">.</span><span class="at">data</span><span class="op">.</span><span class="at">TEST_USER_PASSWORD</span><span class="op">,</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>  isCI<span class="op">:</span> parseResult<span class="op">.</span><span class="at">data</span><span class="op">.</span><span class="at">CI</span><span class="op">,</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<ul>
+<li><strong>Line-by-Line Explanation</strong>:
+<ul>
+<li><code>import 'dotenv/config'</code> loads variables from our local
+<code>.env</code> file into <code>process.env</code>.</li>
+<li><code>getEnvVal</code> checks if an environment variable is defined.
+If it is empty or missing, it falls back to our safe mock default.</li>
+<li><code>envSchema</code> defines the expected format of our
+environment variables using Zod validation.</li>
+<li><code>envSchema.safeParse</code> validates our environment variables
+against the schema.</li>
+<li><code>if (!parseResult.success)</code> catches configuration issues
+at startup, throwing an explicit error if variables are missing.</li>
+<li><code>export const envConfig</code> exports a strongly-typed
+configuration object for our tests to use.</li>
+</ul></li>
+</ul>
+<h4 id="srcfixturesauth.fixtures.ts">3.
+<code>src/fixtures/auth.fixtures.ts</code></h4>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { test <span class="im">as</span> base<span class="op">,</span> expect<span class="op">,</span> Page } <span class="im">from</span> <span class="st">&#39;@playwright/test&#39;</span><span class="op">;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { LoginPage } <span class="im">from</span> <span class="st">&#39;../pages/LoginPage&#39;</span><span class="op">;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { mockDb } <span class="im">from</span> <span class="st">&#39;../utils/mockDb&#39;</span><span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="op">*</span> <span class="im">as</span> fs <span class="im">from</span> <span class="st">&#39;fs&#39;</span><span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="op">*</span> <span class="im">as</span> path <span class="im">from</span> <span class="st">&#39;path&#39;</span><span class="op">;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> test <span class="op">=</span> base<span class="op">.</span><span class="fu">extend</span><span class="op">&lt;</span>{ authenticatedPage<span class="op">:</span> Page }<span class="op">&gt;</span>({</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  page<span class="op">:</span> <span class="kw">async</span> ({ page }<span class="op">,</span> use) <span class="kw">=&gt;</span> {</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> <span class="fu">setupUiMockInterceptors</span>(page)<span class="op">;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> <span class="fu">use</span>(page)<span class="op">;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  authenticatedPage<span class="op">:</span> <span class="kw">async</span> ({ browser }<span class="op">,</span> use) <span class="kw">=&gt;</span> {</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> workerId <span class="op">=</span> <span class="bu">process</span><span class="op">.</span><span class="at">env</span><span class="op">.</span><span class="at">TEST_WORKER_INDEX</span> <span class="op">||</span> <span class="st">&#39;0&#39;</span><span class="op">;</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> authFile <span class="op">=</span> path<span class="op">.</span><span class="fu">resolve</span>(<span class="vs">`test-results/.auth/user_worker_</span><span class="sc">${</span>workerId<span class="sc">}</span><span class="vs">.json`</span>)<span class="op">;</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="op">!</span>fs<span class="op">.</span><span class="fu">existsSync</span>(authFile)) {</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> context <span class="op">=</span> <span class="cf">await</span> browser<span class="op">.</span><span class="fu">newContext</span>()<span class="op">;</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> setupPage <span class="op">=</span> <span class="cf">await</span> context<span class="op">.</span><span class="fu">newPage</span>()<span class="op">;</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>      <span class="cf">await</span> <span class="fu">setupUiMockInterceptors</span>(setupPage)<span class="op">;</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> loginPage <span class="op">=</span> <span class="kw">new</span> <span class="fu">LoginPage</span>(setupPage)<span class="op">;</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>      <span class="cf">await</span> loginPage<span class="op">.</span><span class="fu">navigate</span>(<span class="st">&#39;/login&#39;</span>)<span class="op">;</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>      <span class="cf">await</span> loginPage<span class="op">.</span><span class="fu">login</span>(<span class="st">&#39;admin@example.com&#39;</span><span class="op">,</span> <span class="st">&#39;securepassword&#39;</span>)<span class="op">;</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>      <span class="cf">await</span> context<span class="op">.</span><span class="fu">storageState</span>({ path<span class="op">:</span> authFile })<span class="op">;</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>      <span class="cf">await</span> setupPage<span class="op">.</span><span class="fu">close</span>()<span class="op">;</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>      <span class="cf">await</span> context<span class="op">.</span><span class="fu">close</span>()<span class="op">;</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> authenticatedContext <span class="op">=</span> <span class="cf">await</span> browser<span class="op">.</span><span class="fu">newContext</span>({ storageState<span class="op">:</span> authFile })<span class="op">;</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> pageInstance <span class="op">=</span> <span class="cf">await</span> authenticatedContext<span class="op">.</span><span class="fu">newPage</span>()<span class="op">;</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> <span class="fu">setupUiMockInterceptors</span>(pageInstance)<span class="op">;</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> <span class="fu">use</span>(pageInstance)<span class="op">;</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> pageInstance<span class="op">.</span><span class="fu">close</span>()<span class="op">;</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> authenticatedContext<span class="op">.</span><span class="fu">close</span>()<span class="op">;</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<ul>
+<li><strong>Line-by-Line Explanation</strong>:
+<ul>
+<li><code>export const test = base.extend</code> extends the default
+Playwright test fixture with our custom setups.</li>
+<li><code>page: async ({ page }, use)</code> configures standard mock
+routing interceptors on every page instance.</li>
+<li><code>authenticatedPage</code> provides a pre-authenticated browser
+session for our tests.</li>
+<li><code>workerId = process.env.TEST_WORKER_INDEX</code> fetches the
+current execution thread ID to isolate authentication state files in
+parallel runs.</li>
+<li><code>if (!fs.existsSync(authFile))</code> checks if a cached
+session exists for the current worker. If missing, it opens a temporary
+browser context, logs in using the <code>LoginPage</code> object, and
+saves the browser session state (cookies and local storage) to a JSON
+file.</li>
+<li><code>browser.newContext({ storageState: authFile })</code> launches
+a new browser context pre-loaded with our saved session details,
+completely bypassing the login UI on subsequent runs.</li>
+<li><code>await setupUiMockInterceptors</code> configures mock routing
+interceptors on our authenticated page instance before passing it to the
+test.</li>
+</ul></li>
+</ul>
+<h4 id="srcapiapiclient.ts">4. <code>src/api/ApiClient.ts</code></h4>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { APIRequestContext<span class="op">,</span> APIResponse } <span class="im">from</span> <span class="st">&#39;@playwright/test&#39;</span><span class="op">;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { envConfig } <span class="im">from</span> <span class="st">&#39;../../config/env.config&#39;</span><span class="op">;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { mockDb } <span class="im">from</span> <span class="st">&#39;../utils/mockDb&#39;</span><span class="op">;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">class</span> ApiClient {</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">private</span> <span class="kw">readonly</span> request<span class="op">:</span> APIRequestContext<span class="op">;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">private</span> <span class="kw">readonly</span> baseUrl<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">private</span> authToken<span class="op">:</span> <span class="dt">string</span> <span class="op">|</span> <span class="dt">null</span> <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">private</span> <span class="kw">readonly</span> isMockMode<span class="op">:</span> <span class="dt">boolean</span><span class="op">;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">constructor</span>(request<span class="op">:</span> APIRequestContext) {</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">.</span><span class="at">request</span> <span class="op">=</span> request<span class="op">;</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">.</span><span class="at">baseUrl</span> <span class="op">=</span> envConfig<span class="op">.</span><span class="at">apiBaseUrl</span><span class="op">;</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">.</span><span class="at">isMockMode</span> <span class="op">=</span> <span class="kw">this</span><span class="op">.</span><span class="at">baseUrl</span><span class="op">.</span><span class="fu">includes</span>(<span class="st">&#39;example.com&#39;</span>)<span class="op">;</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="kw">public</span> <span class="fu">setAuthToken</span>(token<span class="op">:</span> <span class="dt">string</span>)<span class="op">:</span> <span class="dt">void</span> {</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">.</span><span class="at">authToken</span> <span class="op">=</span> token<span class="op">;</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="kw">private</span> <span class="fu">getHeaders</span>()<span class="op">:</span> <span class="bu">Record</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">,</span> <span class="dt">string</span><span class="op">&gt;</span> {</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> headers<span class="op">:</span> <span class="bu">Record</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">,</span> <span class="dt">string</span><span class="op">&gt;</span> <span class="op">=</span> {</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>      <span class="st">&#39;Content-Type&#39;</span><span class="op">:</span> <span class="st">&#39;application/json&#39;</span><span class="op">,</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>      Accept<span class="op">:</span> <span class="st">&#39;application/json&#39;</span><span class="op">,</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    }<span class="op">;</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="kw">this</span><span class="op">.</span><span class="at">authToken</span>) {</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>      headers[<span class="st">&#39;Authorization&#39;</span>] <span class="op">=</span> <span class="vs">`Bearer </span><span class="sc">${</span><span class="kw">this</span><span class="op">.</span><span class="at">authToken</span><span class="sc">}</span><span class="vs">`</span><span class="op">;</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> headers<span class="op">;</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>  <span class="kw">public</span> <span class="kw">async</span> <span class="fu">post</span>(path<span class="op">:</span> <span class="dt">string</span><span class="op">,</span> body<span class="op">:</span> <span class="dt">object</span>)<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span>APIResponse<span class="op">&gt;</span> {</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="kw">this</span><span class="op">.</span><span class="at">isMockMode</span>) {</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> <span class="kw">this</span><span class="op">.</span><span class="fu">handleMockRequest</span>(<span class="st">&#39;POST&#39;</span><span class="op">,</span> path<span class="op">,</span> body)<span class="op">;</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="kw">this</span><span class="op">.</span><span class="at">request</span><span class="op">.</span><span class="fu">post</span>(<span class="vs">`</span><span class="sc">${</span><span class="kw">this</span><span class="op">.</span><span class="at">baseUrl</span><span class="sc">}${</span>path<span class="sc">}</span><span class="vs">`</span><span class="op">,</span> {</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>      data<span class="op">:</span> body<span class="op">,</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>      headers<span class="op">:</span> <span class="kw">this</span><span class="op">.</span><span class="fu">getHeaders</span>()<span class="op">,</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>    })<span class="op">;</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<ul>
+<li><strong>Line-by-Line Explanation</strong>:
+<ul>
+<li><code>this.isMockMode = this.baseUrl.includes('example.com')</code>
+checks if the configured API base URL points to our mock domain.</li>
+<li><code>setAuthToken(token)</code> configures the bearer token header
+used for authenticated request calls.</li>
+<li><code>getHeaders()</code> configures headers for our outgoing
+request, attaching our authentication token if present.</li>
+<li><code>public async post</code> checks if we are running in mock
+mode. If yes, it routes requests through our local mock engine. If no,
+it sends a real HTTP request using Playwright’s
+<code>APIRequestContext</code>, making it easy to transition between
+mock and live servers.</li>
+</ul></li>
+</ul>
+<h4 id="testsintegrationcreate-and-verify.spec.ts">5.
+<code>tests/integration/create-and-verify.spec.ts</code></h4>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { test<span class="op">,</span> expect } <span class="im">from</span> <span class="st">&#39;../../src/fixtures/auth.fixtures&#39;</span><span class="op">;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { ApiClient<span class="op">,</span> API_ENDPOINTS } <span class="im">from</span> <span class="st">&#39;../../src/api/ApiClient&#39;</span><span class="op">;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { LoginPage } <span class="im">from</span> <span class="st">&#39;../../src/pages/LoginPage&#39;</span><span class="op">;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { DashboardPage } <span class="im">from</span> <span class="st">&#39;../../src/pages/DashboardPage&#39;</span><span class="op">;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>test<span class="op">.</span><span class="fu">describe</span>(<span class="st">&#39;Integrated API-UI Verification&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> apiClient<span class="op">:</span> ApiClient<span class="op">;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> createdResourceId<span class="op">:</span> <span class="dt">string</span> <span class="op">|</span> <span class="dt">null</span> <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> testResourceName <span class="op">=</span> <span class="vs">`Integration_Suite_</span><span class="sc">${</span><span class="bu">Date</span><span class="op">.</span><span class="fu">now</span>()<span class="sc">}</span><span class="vs">`</span><span class="op">;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  test<span class="op">.</span><span class="fu">beforeEach</span>(<span class="kw">async</span> ({ request }) <span class="kw">=&gt;</span> {</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    apiClient <span class="op">=</span> <span class="kw">new</span> <span class="fu">ApiClient</span>(request)<span class="op">;</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    apiClient<span class="op">.</span><span class="fu">setAuthToken</span>(<span class="st">&#39;mock-integration-write-token&#39;</span>)<span class="op">;</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  test<span class="op">.</span><span class="fu">afterAll</span>(<span class="kw">async</span> ({ request }) <span class="kw">=&gt;</span> {</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (createdResourceId) {</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> cleanupClient <span class="op">=</span> <span class="kw">new</span> <span class="fu">ApiClient</span>(request)<span class="op">;</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>      cleanupClient<span class="op">.</span><span class="fu">setAuthToken</span>(<span class="st">&#39;mock-integration-write-token&#39;</span>)<span class="op">;</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>      <span class="cf">await</span> cleanupClient<span class="op">.</span><span class="fu">delete</span>(API_ENDPOINTS<span class="op">.</span><span class="fu">RESOURCE_BY_ID</span>(createdResourceId))<span class="op">;</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">test</span>(<span class="st">&#39;Should seed resource via API and verify presence in UI list view @smoke&#39;</span><span class="op">,</span> <span class="kw">async</span> ({ page }) <span class="kw">=&gt;</span> {</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> resourcePayload <span class="op">=</span> {</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>      name<span class="op">:</span> testResourceName<span class="op">,</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>      type<span class="op">:</span> <span class="st">&#39;automated&#39;</span><span class="op">,</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>      owner<span class="op">:</span> <span class="st">&#39;QA Integration Team&#39;</span><span class="op">,</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>      itemsCount<span class="op">:</span> <span class="dv">99</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    }<span class="op">;</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> response <span class="op">=</span> <span class="cf">await</span> apiClient<span class="op">.</span><span class="fu">post</span>(API_ENDPOINTS<span class="op">.</span><span class="at">RESOURCES</span><span class="op">,</span> resourcePayload)<span class="op">;</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect</span>(response<span class="op">.</span><span class="fu">status</span>())<span class="op">.</span><span class="fu">toBe</span>(<span class="dv">201</span>)<span class="op">;</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> responseBody <span class="op">=</span> <span class="cf">await</span> response<span class="op">.</span><span class="fu">json</span>()<span class="op">;</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    createdResourceId <span class="op">=</span> responseBody<span class="op">.</span><span class="at">id</span><span class="op">;</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> loginPage <span class="op">=</span> <span class="kw">new</span> <span class="fu">LoginPage</span>(page)<span class="op">;</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> loginPage<span class="op">.</span><span class="fu">navigate</span>(<span class="st">&#39;/login&#39;</span>)<span class="op">;</span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> loginPage<span class="op">.</span><span class="fu">login</span>(<span class="st">&#39;admin@example.com&#39;</span><span class="op">,</span> <span class="st">&#39;securepassword&#39;</span>)<span class="op">;</span></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> dashboardPage <span class="op">=</span> <span class="kw">new</span> <span class="fu">DashboardPage</span>(page)<span class="op">;</span></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> dashboardPage<span class="op">.</span><span class="fu">navigate</span>(<span class="st">&#39;/dashboard&#39;</span>)<span class="op">;</span></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> dashboardPage<span class="op">.</span><span class="fu">navigateTo</span>(<span class="st">&#39;Reports&#39;</span>)<span class="op">;</span></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> resourceLocator <span class="op">=</span> page<span class="op">.</span><span class="fu">locator</span>(<span class="vs">`[data-testid=&quot;resource-row-</span><span class="sc">${</span>createdResourceId<span class="sc">}</span><span class="vs">&quot;]`</span>)<span class="op">;</span></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> <span class="fu">expect</span>(resourceLocator)<span class="op">.</span><span class="fu">toBeVisible</span>({ timeout<span class="op">:</span> <span class="dv">5000</span> })<span class="op">;</span></span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<ul>
+<li><strong>Line-by-Line Explanation</strong>:
+<ul>
+<li><code>let createdResourceId</code> defines a variable to store our
+seeded resource ID, allowing us to clean up the data afterwards.</li>
+<li><code>test.beforeEach</code> configures our API client and sets our
+authenticated token before running the test.</li>
+<li><code>test.afterAll</code> acts as an automated cleanup step. It
+deletes the seeded resource using the API even if the UI assertions
+fail, preventing database pollution.</li>
+<li><code>const response = await apiClient.post(...)</code> seeds our
+test data directly using the API client. This is extremely fast, taking
+only milliseconds.</li>
+<li><code>createdResourceId = responseBody.id</code> extracts the unique
+ID of our seeded resource.</li>
+<li><code>loginPage.navigate('/login')</code> navigates to the login
+screen and authenticates using our Page Object helper methods.</li>
+<li><code>dashboardPage.navigateTo('Reports')</code> navigates to the
+dashboard reports view.</li>
+<li><code>page.locator(...)</code> uses the seeded resource ID to verify
+that the UI is displaying our newly created resource correctly.</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="the-test-journey-follow-one-action-end-to-end">6. The Test
+Journey — Follow One Action End-to-End</h2>
+<p>Here is the exact journey of our hybrid integration test
+<code>create-and-verify.spec.ts</code>:</p>
+<h3 id="step-1-seeding-the-resource-via-api-client">Step 1: Seeding the
+Resource via API Client</h3>
+<p>The test script calls
+<code>apiClient.post(API_ENDPOINTS.RESOURCES, resourcePayload)</code>. *
+<strong>Data Format</strong>: A JSON object containing:
+<code>json   {     "name": "Integration_Suite_1779732709079",     "type": "automated",     "owner": "QA Integration Team",     "itemsCount": 99   }</code>
+* <strong>Handling Module</strong>: <code>ApiClient</code>
+(<code>src/api/ApiClient.ts</code>). * <strong>Execution Logic</strong>:
+<code>ApiClient</code> checks if <code>isMockMode</code> is true. Since
+the API URL points to <code>example.com</code>, it intercepts the
+request and routes it to <code>handleMockRequest()</code>. *
+<strong>Verification &amp; DB Update</strong>: The mock engine runs Zod
+schema checks on the payload, generates a unique ID
+(<code>res-196801</code>), and appends the new record directly to
+<code>mockDb.ts</code>:
+<code>typescript   // mockDb.ts receives:   {     id: "res-196801",     name: "Integration_Suite_1779732709079",     type: "automated",     owner: "QA Integration Team",     itemsCount: 99   }</code>
+* <strong>API Response</strong>: Returns a <code>MockAPIResponse</code>
+with status <code>201 Created</code> containing the updated record in
+JSON format.</p>
+<h3 id="step-2-ui-authentication">Step 2: UI Authentication</h3>
+<p>The test script launches our browser UI automation flow using Page
+Object methods: * <strong>Handling Module</strong>:
+<code>LoginPage</code> (<code>src/pages/LoginPage.ts</code>). *
+<strong>Execution Logic</strong>: The test runs
+<code>loginPage.navigate('/login')</code> followed by
+<code>loginPage.login('admin@example.com', 'securepassword')</code>. *
+<strong>Browser Interception</strong>: The <code>page</code> fixture
+catches the <code>/login</code> request and serves our interactive mock
+HTML page. The mock page processes the credentials, sets our
+authentication cookie:
+<code>document.cookie = "session=mock-cookie-auth"</code> and redirects
+the browser to the dashboard page: <code>/dashboard</code>.</p>
+<h3 id="step-3-ui-dashboard-navigation">Step 3: UI Dashboard
+Navigation</h3>
+<p>The test script runs
+<code>dashboardPage.navigate('/dashboard')</code> followed by
+<code>dashboardPage.navigateTo('Reports')</code>. * <strong>Handling
+Module</strong>: <code>DashboardPage</code>
+(<code>src/pages/DashboardPage.ts</code>). * <strong>Execution
+Logic</strong>: The page router intercepts <code>/dashboard</code> and
+serves our interactive dashboard page. The client-side script reads the
+current navigation location hash (<code>#reports</code>) and toggles the
+visible view from Settings to Reports.</p>
+<h3 id="step-4-ui-data-rendering-and-assertion">Step 4: UI Data
+Rendering and Assertion</h3>
+<p>The test script verifies that the seeded resource is displayed
+correctly in the reports view. * <strong>Handling Module</strong>:
+Playwright Page Assertion Engine. * <strong>Execution Logic</strong>:
+When serving <code>/dashboard</code>, our browser mock router reads the
+current list of records from <code>mockDb.ts</code> (which now includes
+our seeded ID <code>res-196801</code>) and dynamically generates the
+HTML table rows:
+<code>html   &lt;tr data-testid="resource-row-res-196801"&gt;     &lt;td data-testid="resource-title-res-196801"&gt;Integration_Suite_1779732709079&lt;/td&gt;     &lt;td data-testid="resource-items-res-196801"&gt;99&lt;/td&gt;   &lt;/tr&gt;</code>
+Playwright checks the visibility of this element using its dynamic
+locators:
+<code>typescript   const resourceLocator = page.locator(`[data-testid="resource-row-res-196801"]`);   await expect(resourceLocator).toBeVisible({ timeout: 5000 });</code>
+Our locators are found instantly, and the test passes.</p>
+<h3 id="step-5-automated-cleanup">Step 5: Automated Cleanup</h3>
+<p>Once the test completes, <code>test.afterAll()</code> runs our
+automated cleanup. * <strong>Handling Module</strong>:
+<code>ApiClient</code> (<code>src/api/ApiClient.ts</code>). *
+<strong>Execution Logic</strong>: The cleanup script sends a
+<code>DELETE</code> request for
+<code>/api/v1/resources/res-196801</code>. The mock client intercepts
+this and removes the record from <code>mockDb.ts</code> using
+<code>deleteResource('res-196801')</code>, leaving our database
+clean.</p>
+<hr />
+<h2 id="the-design-decisions-why-its-built-this-way">7. The Design
+Decisions — Why It’s Built This Way</h2>
+<h3 id="page-object-model-pom">7.1 Page Object Model (POM)</h3>
+<ul>
+<li><strong>The Decision</strong>: We structured the UI actions using
+Page Objects (<code>BasePage</code>, <code>LoginPage</code>,
+<code>DashboardPage</code>).</li>
+<li><strong>Alternatives</strong>: Writing inline locator strings (like
+<code>await page.click('[data-testid="login-submit"]')</code>) directly
+in our test files.</li>
+<li><strong>The Trade-off</strong>: Writing Page Objects takes more
+effort up front. However, it separates page structure from test logic,
+making the suite much easier to maintain.</li>
+<li><strong>Interviewer Answer</strong>: “I chose the Page Object Model
+because it isolates page structure from our test scripts. If a selector
+changes, we only need to update it in our page class, leaving our test
+files completely untouched.”</li>
+</ul>
+<h3 id="state-synchronized-local-mocking">7.2 State-Synchronized Local
+Mocking</h3>
+<ul>
+<li><strong>The Decision</strong>: We built a local mock data store
+(<code>mockDb.ts</code>) and integrated it with our API clients and
+browser routing.</li>
+<li><strong>Alternatives</strong>: Setting up a dedicated backend test
+server or using mock tools like WireMock.</li>
+<li><strong>The Trade-off</strong>: It requires maintaining a local mock
+store in our code. However, it ensures our test runs are fast, reliable,
+and completely free from external network instability.</li>
+<li><strong>Interviewer Answer</strong>: “I implemented a
+state-synchronized local mock database that integrates with our API
+clients and browser routing. This enables our UI and API tests to run
+completely offline, with zero external dependencies.”</li>
+</ul>
+<h3 id="worker-isolated-session-caching">7.3 Worker-Isolated session
+Caching</h3>
+<ul>
+<li><strong>The Decision</strong>: We cached browser session states in
+unique files mapped to the current worker thread ID:
+<code>user_worker_${workerId}.json</code>.</li>
+<li><strong>Alternatives</strong>: Using a single global session file
+like <code>user.json</code> for all runs.</li>
+<li><strong>The Trade-off</strong>: It requires setting up separate
+session files for each worker. However, it prevents parallel execution
+threads from colliding during write operations.</li>
+<li><strong>Interviewer Answer</strong>: “I cached browser session
+states in unique files mapped to the current worker thread ID. This
+prevents parallel execution threads from colliding during write
+operations in parallel runs.”</li>
+</ul>
+<h3 id="fail-fast-environment-validation-via-zod">7.4 Fail-Fast
+Environment Validation via Zod</h3>
+<ul>
+<li><strong>The Decision</strong>: We used Zod schema validation to
+verify environment variables at startup.</li>
+<li><strong>Alternatives</strong>: Accessing <code>process.env</code>
+directly throughout our codebase without verification.</li>
+<li><strong>The Trade-off</strong>: It requires defining an explicit Zod
+schema for our variables. However, it ensures the framework fails
+immediately at startup if variables are missing.</li>
+<li><strong>Interviewer Answer</strong>: “I used Zod schema validation
+to verify environment variables at startup. This prevents tests from
+running with missing or invalid environment variables, failing the build
+immediately instead.”</li>
+</ul>
+<h3 id="ci-push-and-pull-request-gating-option-a">7.5 CI Push and Pull
+Request Gating (Option A)</h3>
+<ul>
+<li><strong>The Decision</strong>: We built a CI pipeline
+(<code>tests.yml</code>) that runs on every code push or PR.</li>
+<li><strong>Alternatives</strong>: Setting up a reporting dashboard for
+post-run analysis.</li>
+<li><strong>The Trade-off</strong>: It requires maintaining a CI
+workflow file. However, it acts as an automated quality gatekeeper that
+prevents broken code from ever being merged.</li>
+<li><strong>Interviewer Answer</strong>: “I set up a CI pipeline that
+runs on every push or PR. This acts as an automated quality gatekeeper
+that prevents broken code from ever being merged into our main
+branch.”</li>
+</ul>
+<hr />
+<h2 id="how-to-run-it-yourself-hands-on-walkthrough">8. How to Run It
+Yourself (Hands-On Walkthrough)</h2>
+<p>Follow these steps to set up and run the framework locally in under
+15 minutes:</p>
+<h3 id="step-1-clone-and-set-up-dependencies">Step 1: Clone and Set Up
+Dependencies</h3>
+<ol type="1">
+<li><p>Open your terminal and navigate to the project directory:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">&quot;/Users/antarangsharma/Downloads/TestMu Ai&quot;</span></span></code></pre></div></li>
+<li><p>Install all dependencies defined in
+<code>package.json</code>:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install</span></code></pre></div>
+<p><em>Expected Output</em>: Displays an installation summary showing
+that packages like Playwright and Zod were successfully
+installed.</p></li>
+</ol>
+<h3 id="step-2-download-playwright-browser-binaries">Step 2: Download
+Playwright Browser Binaries</h3>
+<ol type="1">
+<li><p>Download the required browser packages:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> playwright install</span></code></pre></div>
+<p><em>Expected Output</em>: Downloads the Chromium and Firefox browser
+binaries to your local cache.</p></li>
+</ol>
+<h3 id="step-3-create-your-environment-file">Step 3: Create Your
+Environment File</h3>
+<ol type="1">
+<li><p>Copy the example environment template:</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> .env.example .env</span></code></pre></div></li>
+<li><p>Open the newly created <code>.env</code> file in your editor and
+configure the variables:</p>
+<pre class="env"><code>BASE_URL=https://app.example.com
+API_BASE_URL=https://api.example.com
+TEST_USER_EMAIL=admin@example.com
+TEST_USER_PASSWORD=securepassword
+CI=false</code></pre></li>
+</ol>
+<h3 id="step-4-run-the-complete-test-suite">Step 4: Run the Complete
+Test Suite</h3>
+<ol type="1">
+<li><p>Run all tests in headless mode (running in the background without
+opening a browser window):</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> test</span></code></pre></div>
+<p><em>Expected Output</em>: Runs all 50 tests in parallel across both
+Chromium and Firefox, showing all tests passing.</p></li>
+</ol>
+<hr />
+<h2 id="interview-prep-the-grilling-section">9. Interview Prep — The
+Grilling Section</h2>
+<h3 id="recruiter-and-behavioral-qe-questions">9.1 Recruiter and
+Behavioral QE Questions</h3>
+<h4 id="q1-walk-me-through-your-automation-frameworks-architecture.">Q1:
+“Walk me through your automation framework’s architecture.”</h4>
+<p>I built a strongly-typed automation framework using Playwright,
+TypeScript, and Zod. It utilizes a strict Page Object Model design where
+all elements and page interactions are isolated inside distinct page
+classes, ensuring zero locator leakage into our test scripts. We manage
+authentication efficiently by saving browser session states to
+worker-specific JSON files, allowing parallel runs to bypass login
+steps. It includes a custom mock data engine that intercepts API and
+browser calls, enabling tests to run completely offline. Finally, it
+integrates with a GitHub Actions pipeline that shards tests across three
+parallel workers to deliver fast feedback.</p>
+<h4
+id="q2-tell-me-about-a-challenging-test-automation-issue-you-solved.">Q2:
+“Tell me about a challenging test automation issue you solved.”</h4>
+<p>A common issue in sharded CI pipelines is authentication collisions.
+When parallel workers run at the same time, they often try to write to a
+single <code>user.json</code> session file, causing file locks and flaky
+tests. I solved this by implementing worker-isolated session caching.
+The fixture reads the current worker’s thread ID and writes to a unique
+session file: <code>user_worker_${workerId}.json</code>. This completely
+isolated the sessions, ensuring stable parallel runs.</p>
+<h4
+id="q3-how-do-you-decide-what-tests-to-automate-versus-what-to-test-manually">Q3:
+“How do you decide what tests to automate versus what to test
+manually?”</h4>
+<p>I prioritize test automation using a risk-and-value model.
+High-value, repetitive tasks like regression tests, authentication, form
+submissions, and core API workflows are automated first. On the other
+hand, exploratory testing, layout usability assessments, and one-off
+edge cases are handled manually, as they require human judgment rather
+than repetitive validation.</p>
+<h4 id="q4-how-do-you-handle-flakiness-in-your-test-suites">Q4: “How do
+you handle flakiness in your test suites?”</h4>
+<p>We prevent flakiness by avoiding hardcoded sleeps like
+<code>page.waitForTimeout()</code>. Instead, we rely on Playwright’s
+native auto-waiting and custom poll waiting helpers that check for
+specific conditions (like an element’s visibility) before proceeding. We
+also configure automatic retries in our CI pipeline to catch transient
+environmental issues.</p>
+<h4
+id="q5-how-does-your-team-handle-database-cleanup-after-running-integration-tests">Q5:
+“How does your team handle database cleanup after running integration
+tests?”</h4>
+<p>We handle cleanup programmatically using API endpoints inside a
+<code>test.afterAll()</code> hook. When our integration test seeds a
+resource via the API, we capture its unique ID. The cleanup script
+deletes the seeded resource via the API after the test completes,
+ensuring our database remains clean even if the UI assertions fail.</p>
+<h4
+id="q6-what-metrics-do-you-use-to-measure-the-success-of-an-automation-framework">Q6:
+“What metrics do you use to measure the success of an automation
+framework?”</h4>
+<p>We track three key metrics: 1. <strong>Execution Time</strong>: The
+total duration of our CI test runs. 2. <strong>Defect Leakage</strong>:
+The number of regressions that bypass our automated checks and reach
+production. 3. <strong>Flakiness Rate</strong>: The percentage of false
+failures that require manual triage.</p>
+<h4
+id="q7-how-would-you-handle-a-developer-who-claims-a-test-failure-is-just-a-flaky-automation-issue">Q7:
+“How would you handle a developer who claims a test failure is just a
+flaky automation issue?”</h4>
+<p>I debug the failure by reviewing the Allure report, failure
+screenshots, videos, and Playwright execution traces. If the trace shows
+a real application defect (like a API error), I present this evidence to
+the developer. If it is indeed a framework issue, I update our waits or
+Page Objects to make the test more resilient.</p>
+<h4
+id="q8-how-do-you-ensure-your-test-automation-codebase-remains-clean-and-maintainable">Q8:
+“How do you ensure your test automation codebase remains clean and
+maintainable?”</h4>
+<p>We maintain code quality by following clean coding standards like DRY
+(Don’t Repeat Yourself) and solid Page Object design patterns. We also
+run static code analysis using TypeScript strict compilation checks to
+catch type errors and syntax bugs early.</p>
+<h4
+id="q9-describe-a-time-you-had-to-learn-a-new-automation-tool-quickly.-how-did-you-handle-it">Q9:
+“Describe a time you had to learn a new automation tool quickly. How did
+you handle it?”</h4>
+<p>When I first started using Playwright, I spent time studying its
+official documentation, exploring its GitHub repository, and building a
+simple sandbox project to learn its core features (like auto-waiting and
+network routing). This hands-on approach allowed me to quickly learn the
+tool and design our framework.</p>
+<h4
+id="q10-how-do-you-present-test-automation-results-and-quality-metrics-to-non-technical-stakeholders">Q10:
+“How do you present test automation results and quality metrics to
+non-technical stakeholders?”</h4>
+<p>I compile our test results into visual dashboards (like Allure
+reports) that show high-level metrics like pass/fail rates, execution
+times, and feature coverage. I highlight the business impact of our
+automation, such as how much manual testing time we saved and how many
+regressions we caught early.</p>
+<hr />
+<h3 id="technical-surface-qe-questions">9.2 Technical Surface QE
+Questions</h3>
+<h4
+id="q11-what-is-the-difference-between-page.click-and-page.locator.click">Q11:
+“What is the difference between page.click() and
+page.locator().click()?”</h4>
+<p><code>page.locator().click()</code> creates a reusable locator
+instance that automatically runs actionability checks before clicking.
+<code>page.click()</code> is a legacy shortcut that resolves the
+selector and clicks it in a single step.</p>
+<h4 id="q12-how-does-playwright-locate-elements-inside-iframes">Q12:
+“How does Playwright locate elements inside iframes?”</h4>
+<p>Playwright uses the <code>frameLocator</code> API:</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> page<span class="op">.</span><span class="fu">frameLocator</span>(<span class="st">&#39;iframe[name=&quot;my-frame&quot;]&#39;</span>)<span class="op">.</span><span class="fu">locator</span>(<span class="st">&#39;button&#39;</span>)<span class="op">.</span><span class="fu">click</span>()<span class="op">;</span></span></code></pre></div>
+<h4
+id="q13-what-locator-strategies-do-you-prioritize-in-your-page-objects">Q13:
+“What locator strategies do you prioritize in your page objects?”</h4>
+<p>We prioritize robust <code>data-testid</code> selectors (like
+<code>[data-testid="login-submit"]</code>) first, followed by
+accessibility ARIA roles (like <code>role="button"</code>). We
+explicitly avoid using brittle absolute paths or raw CSS classes.</p>
+<h4
+id="q14-how-do-you-retrieve-the-text-content-of-an-element-in-playwright">Q14:
+“How do you retrieve the text content of an element in Playwright?”</h4>
+<p>We use the <code>.textContent()</code> or <code>.innerText()</code>
+methods on the locator:</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> text <span class="op">=</span> <span class="cf">await</span> page<span class="op">.</span><span class="fu">locator</span>(<span class="st">&#39;.title&#39;</span>)<span class="op">.</span><span class="fu">textContent</span>()<span class="op">;</span></span></code></pre></div>
+<h4
+id="q15-how-do-you-input-text-into-an-input-field-in-playwright">Q15:
+“How do you input text into an input field in Playwright?”</h4>
+<p>We use the <code>.fill()</code> method, which clears the field first
+and inputs the new text:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> page<span class="op">.</span><span class="fu">locator</span>(<span class="st">&#39;[data-testid=&quot;email&quot;]&#39;</span>)<span class="op">.</span><span class="fu">fill</span>(<span class="st">&#39;user@example.com&#39;</span>)<span class="op">;</span></span></code></pre></div>
+<h4 id="q16-what-is-the-purpose-of-tsconfig.json-path-aliases">Q16:
+“What is the purpose of tsconfig.json path aliases?”</h4>
+<p>It configures short aliases (like mapping <code>@/*</code> to
+<code>src/*</code>) for our directories, preventing long and messy
+relative import paths in our codebase.</p>
+<h4
+id="q17-how-do-you-execute-api-requests-inside-a-playwright-ui-test">Q17:
+“How do you execute API requests inside a Playwright UI test?”</h4>
+<p>We use Playwright’s built-in <code>request</code> fixture, which
+provides access to <code>APIRequestContext</code> for sending direct
+HTTP requests during a browser session.</p>
+<h4
+id="q18-what-does-the-fullyparallel-option-do-in-playwright.config.ts">Q18:
+“What does the fullyParallel option do in playwright.config.ts?”</h4>
+<p>It instructs Playwright to run all tests in parallel, executing
+multiple test files and individual tests inside a single file
+concurrently.</p>
+<h4
+id="q19-how-do-you-assert-that-a-checkbox-is-checked-in-playwright">Q19:
+“How do you assert that a checkbox is checked in Playwright?”</h4>
+<p>We use the <code>.toBeChecked()</code> assertion:</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> <span class="fu">expect</span>(page<span class="op">.</span><span class="fu">locator</span>(<span class="st">&#39;#agree&#39;</span>))<span class="op">.</span><span class="fu">toBeChecked</span>()<span class="op">;</span></span></code></pre></div>
+<h4
+id="q20-how-do-you-run-only-a-specific-test-file-or-tag-in-playwright">Q20:
+“How do you run only a specific test file or tag in Playwright?”</h4>
+<p>We pass the file path or tag name directly to the CLI command:</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> playwright test tests/ui/login.spec.ts <span class="at">--grep</span> <span class="st">&quot;@smoke&quot;</span></span></code></pre></div>
+<h4 id="q21-what-is-the-role-of-.env.example">Q21: “What is the role of
+.env.example?”</h4>
+<p>It serves as a template that defines the required environment
+variables for the project, without sharing sensitive credentials in the
+public repository.</p>
+<h4
+id="q22-how-do-you-capture-a-screenshot-of-a-specific-element-instead-of-the-full-page">Q22:
+“How do you capture a screenshot of a specific element instead of the
+full page?”</h4>
+<p>We call the <code>.screenshot()</code> method directly on the
+element’s locator:</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> page<span class="op">.</span><span class="fu">locator</span>(<span class="st">&#39;.chart&#39;</span>)<span class="op">.</span><span class="fu">screenshot</span>({ path<span class="op">:</span> <span class="st">&#39;chart.png&#39;</span> })<span class="op">;</span></span></code></pre></div>
+<h4
+id="q23-what-is-the-difference-between-tobevisible-and-tobeattached">Q23:
+“What is the difference between toBeVisible() and toBeAttached()?”</h4>
+<p><code>toBeAttached()</code> verifies that an element exists in the
+DOM. <code>toBeVisible()</code> ensures that the element is also
+actively rendered on the screen (not hidden by CSS styles).</p>
+<h4 id="q24-how-do-you-handle-dropdown-selections-in-playwright">Q24:
+“How do you handle dropdown selections in Playwright?”</h4>
+<p>We use the <code>.selectOption()</code> method on the locator,
+passing the target value or label:</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> page<span class="op">.</span><span class="fu">locator</span>(<span class="st">&#39;#countries&#39;</span>)<span class="op">.</span><span class="fu">selectOption</span>(<span class="st">&#39;US&#39;</span>)<span class="op">;</span></span></code></pre></div>
+<h4
+id="q25-how-do-you-assert-that-an-api-response-status-is-successful">Q25:
+“How do you assert that an API response status is successful?”</h4>
+<p>We use the <code>.ok()</code> method or <code>.status()</code>
+assertion:</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expect</span>(response<span class="op">.</span><span class="fu">ok</span>())<span class="op">.</span><span class="fu">toBe</span>(<span class="kw">true</span>)<span class="op">;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">expect</span>(response<span class="op">.</span><span class="fu">status</span>())<span class="op">.</span><span class="fu">toBe</span>(<span class="dv">201</span>)<span class="op">;</span></span></code></pre></div>
+<h4
+id="q26-how-do-you-pass-a-bearer-token-header-in-playwright-api-requests">Q26:
+“How do you pass a bearer token header in Playwright API requests?”</h4>
+<p>We attach the token to the <code>headers</code> option of the request
+method:</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> request<span class="op">.</span><span class="fu">get</span>(<span class="st">&#39;/api/data&#39;</span><span class="op">,</span> {</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  headers<span class="op">:</span> { <span class="st">&#39;Authorization&#39;</span><span class="op">:</span> <span class="vs">`Bearer </span><span class="sc">${</span>token<span class="sc">}</span><span class="vs">`</span> }</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<h4 id="q27-what-does-npm-ci-do-compared-to-npm-install">Q27: “What does
+npm ci do compared to npm install?”</h4>
+<p><code>npm ci</code> runs a clean installation, using the exact
+versions defined in your <code>package-lock.json</code> file. It deletes
+existing <code>node_modules</code> first, making it faster and more
+reliable in CI pipelines.</p>
+<h4 id="q28-how-do-you-check-if-an-element-is-hidden-in-playwright">Q28:
+“How do you check if an element is hidden in Playwright?”</h4>
+<p>We use the <code>.toBeHidden()</code> assertion:</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> <span class="fu">expect</span>(page<span class="op">.</span><span class="fu">locator</span>(<span class="st">&#39;.loader&#39;</span>))<span class="op">.</span><span class="fu">toBeHidden</span>()<span class="op">;</span></span></code></pre></div>
+<h4 id="q29-how-do-you-print-debug-logs-during-test-runs">Q29: “How do
+you print debug logs during test runs?”</h4>
+<p>We print messages using standard node console logging:</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`⏱️ Action complete in </span><span class="sc">${</span>duration<span class="sc">}</span><span class="vs">ms`</span>)<span class="op">;</span></span></code></pre></div>
+<h4
+id="q30-what-is-the-default-command-to-show-the-playwright-html-report">Q30:
+“What is the default command to show the Playwright HTML report?”</h4>
+<p>We use the default CLI show-report command:</p>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> playwright show-report</span></code></pre></div>
+<hr />
+<h3 id="senior-sdet-deep-dive-questions">9.3 Senior SDET Deep-Dive
+Questions</h3>
+<h4
+id="q31-how-does-your-framework-mitigate-test-flakiness-without-using-hardcoded-sleeps">Q31:
+“How does your framework mitigate test flakiness without using hardcoded
+sleeps?”</h4>
+<p>We avoid flakiness by relying on Playwright’s native auto-waiting and
+custom poll waiting helpers (<code>wait.ts</code>) that check for
+specific conditions before proceeding. The custom wait helper checks
+conditions in a loop every 500ms, throwing an explicit error only if the
+timeout is exceeded. This ensures that tests proceed the moment the
+condition is met, without wasting time.</p>
+<h4
+id="q32-explain-how-your-authentication-fixture-operates.-how-does-it-handle-storage-state-isolation-across-parallel-sharded-workers">Q32:
+“Explain how your authentication fixture operates. How does it handle
+storage state isolation across parallel sharded workers?”</h4>
+<p>The custom <code>authenticatedPage</code> fixture isolates browser
+sessions by writing to unique session files mapped to the current worker
+thread ID: <code>user_worker_${workerId}.json</code>. During parallel
+runs, each worker reads and writes to its own session file, completely
+preventing file locks and data collisions across parallel execution
+workers.</p>
+<h4
+id="q33-what-happens-if-the-backend-changes-a-response-schema-how-does-your-framework-catch-this">Q33:
+“What happens if the backend changes a response schema? How does your
+framework catch this?”</h4>
+<p>We catch contract drift by validating API responses against strict
+Zod schemas inside our assertion helpers (<code>assertions.ts</code>).
+When an API response is received, the schema parser validates the entire
+object structure and data types. If a field type changes or a required
+key is missing, Zod throws a detailed error that fails the test run
+immediately.</p>
+<h4
+id="q34-your-integration-test-seeds-via-api-and-reads-via-ui.-why-is-this-hybrid-pattern-superior-to-ui-only-setups">Q34:
+“Your integration test seeds via API and reads via UI. Why is this
+hybrid pattern superior to UI-only setups?”</h4>
+<p>Seeding test data via the API is faster and more reliable than manual
+UI setup. Clicking through multiple screens to set up state is slow and
+highly vulnerable to layout changes. Using direct API requests to seed
+data takes milliseconds, ensuring that the UI tests only focus on
+verifying the target screen.</p>
+<h4
+id="q35-how-would-you-scale-this-to-1000-tests-what-changes-would-you-make-in-the-ci-configuration">Q35:
+“How would you scale this to 1,000+ tests? What changes would you make
+in the CI configuration?”</h4>
+<p>To run thousands of tests efficiently, we would scale our CI
+execution by increasing the number of parallel runners in our GitHub
+Actions matrix. We would also allocate more worker threads in
+<code>playwright.config.ts</code> and set up parallel execution pools on
+private runners to handle the load.</p>
+<h4
+id="q36-what-is-the-weakest-part-of-this-framework-design-and-how-would-you-fix-it-in-the-next-sprint">Q36:
+“What is the weakest part of this framework design, and how would you
+fix it in the next sprint?”</h4>
+<p>The weakest part is that our mock database (<code>mockDb.ts</code>)
+is an in-memory array that resets on every run. To support complex
+end-to-end integration scenarios, we should replace this with a
+lightweight local database (like SQLite) or a mock server that maintains
+state persistently across separate test processes.</p>
+<h4
+id="q37-how-do-your-page-objects-prevent-raw-selectors-from-leaking-into-test-files">Q37:
+“How do your page objects prevent raw selectors from leaking into test
+files?”</h4>
+<p>We declare all element selectors as private, read-only properties at
+the top of each page class. We then encapsulate all DOM interactions
+inside descriptive helper methods (like <code>loginPage.login()</code>),
+ensuring that the test files only call methods and never access
+selectors directly.</p>
+<h4
+id="q38-what-is-the-purpose-of-the-ismockmode-property-inside-your-apiclient">Q38:
+“What is the purpose of the isMockMode property inside your
+ApiClient?”</h4>
+<p>It enables a hybrid execution model. If the configured base URL
+points to our placeholder domain, <code>ApiClient</code> routes requests
+through our local mock engine. Otherwise, it sends a real HTTP request,
+allowing us to switch between mock and live servers without modifying
+our tests.</p>
+<h4
+id="q39-explain-the-implementation-of-your-exponential-backoff-retry-helper.">Q39:
+“Explain the implementation of your exponential backoff retry
+helper.”</h4>
+<p>The retry helper executes a callback function inside a loop. If the
+function throws an error, the helper logs a warning, calculates an
+increased delay (doubling the sleep duration on each iteration), and
+waits before retrying. If all retries fail, it throws the final
+error.</p>
+<h4
+id="q40-how-does-the-merge-reports-job-work-in-your-ci-pipeline">Q40:
+“How does the merge-reports job work in your CI pipeline?”</h4>
+<p>The parallel test runners run their tests using the <code>blob</code>
+reporter, which produces a binary results file for each shard. These
+files are uploaded as CI artifacts. The final <code>report</code> job
+downloads all the blob files and runs
+<code>npx playwright merge-reports</code>, compiling them into a single
+HTML report.</p>
+<h4
+id="q41-what-are-the-benefits-of-using-an-in-memory-database-mock-store-over-standard-browser-network-mocking">Q41:
+“What are the benefits of using an in-memory database mock store over
+standard browser network mocking?”</h4>
+<p>An in-memory store allows us to synchronize state between separate
+test tools. When an API test creates a resource, the record is added to
+the shared store. When the browser UI subsequently navigates to the list
+page, the page router reads from that exact same store, enabling
+realistic end-to-end integration flows.</p>
+<h4
+id="q42-how-would-you-handle-testing-web-pages-that-contain-dynamic-real-time-charts">Q42:
+“How would you handle testing web pages that contain dynamic, real-time
+charts?”</h4>
+<p>We handle dynamic pages by using locator assertions that verify the
+visibility of the canvas container, checking that data labels are
+rendered correctly in the DOM, or using visual regression testing to
+compare chart screenshots against baseline images.</p>
+<h4
+id="q43-how-does-the-basepage-class-help-maintain-structure-across-all-page-object-classes">Q43:
+“How does the BasePage class help maintain structure across all Page
+Object classes?”</h4>
+<p><code>BasePage</code> serves as a parent class that provides reusable
+helper methods for browser navigation, DOM event load waiting, and
+screenshotting. All page classes extend <code>BasePage</code> and
+inherit these methods, preventing duplicate code across our Page
+Objects.</p>
+<h4
+id="q44-why-does-the-apiclient-return-raw-apiresponse-objects-instead-of-parsed-json-data">Q44:
+“Why does the ApiClient return raw APIResponse objects instead of parsed
+JSON data?”</h4>
+<p>It allows the test files to perform assertions on the response
+status, headers, and execution latencies directly. This keeps the API
+client highly reusable, leaving the assertion and validation logic to
+the test files.</p>
+<h4
+id="q45-what-is-the-purpose-of-the-assertresponsetime-helper-in-assertions.ts">Q45:
+“What is the purpose of the assertResponseTime helper in
+assertions.ts?”</h4>
+<p>It asserts that an API transaction completes within our performance
+SLA (Service Level Agreement — a contract specifying performance
+targets). It measures the difference between the current time and the
+request start time, throwing an explicit error if the latency limit is
+exceeded.</p>
+<h4
+id="q46-how-do-you-prevent-sensitive-credentials-from-being-committed-to-your-repository">Q46:
+“How do you prevent sensitive credentials from being committed to your
+repository?”</h4>
+<p>We exclude local environment configuration files (<code>.env</code>)
+from Git using our <code>.gitignore</code> file. In CI, we inject these
+sensitive values dynamically at runtime using GitHub Secrets.</p>
+<h4
+id="q47-what-is-the-difference-between-playwrights-native-retries-and-your-custom-retry-helper">Q47:
+“What is the difference between Playwright’s native retries and your
+custom retry helper?”</h4>
+<p>Playwright’s retries restart the entire test from scratch. Our custom
+retry helper retries a specific async action (like a flaky API call)
+inside the running test, avoiding the overhead of restarting the browser
+session.</p>
+<h4
+id="q48-how-does-your-wait.ts-poller-bypass-playwrights-page.waitfortimeout-anti-pattern">Q48:
+“How does your wait.ts poller bypass Playwright’s page.waitForTimeout
+anti-pattern?”</h4>
+<p>Our custom poller uses Node’s standard <code>setTimeout</code> to
+handle delays, avoiding Playwright’s page-level timers. This ensures the
+browser’s execution thread remains active and prevents tests from
+failing due to timer conflicts.</p>
+<h4 id="q49-why-is-typescript-strict-mode-enabled-in-tsconfig.json">Q49:
+“Why is TypeScript strict mode enabled in tsconfig.json?”</h4>
+<p>Strict mode enables strict type-checking checks, requiring all
+variables and functions to have explicit type definitions. This catches
+common bugs like <code>null</code> pointer exceptions and type
+mismatches during development.</p>
+<h4
+id="q50-how-do-you-verify-that-your-ci-pipeline-is-caching-dependencies-correctly">Q50:
+“How do you verify that your CI pipeline is caching dependencies
+correctly?”</h4>
+<p>We verify caching by reviewing the
+<code>Package Setup &amp; Install</code> job logs in GitHub Actions. If
+caching is configured correctly, the logs will show a
+<code>Cache hit</code> and skip running <code>npm ci</code> and browser
+installations, reducing build times.</p>
+<h4
+id="q51-what-is-the-difference-between-the-serial-and-parallel-execution-modes-in-playwright">Q51:
+“What is the difference between the serial and parallel execution modes
+in Playwright?”</h4>
+<p>Parallel mode runs tests concurrently using separate browser
+contexts. Serial mode runs tests in a strict sequence using the same
+browser context, resetting the page only if a test fails.</p>
+<h4
+id="q52-how-would-you-implement-visual-regression-testing-in-this-framework">Q52:
+“How would you implement visual regression testing in this
+framework?”</h4>
+<p>We would integrate screenshot comparisons into our Page Object
+classes:</p>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> <span class="fu">expect</span>(page)<span class="op">.</span><span class="fu">toHaveScreenshot</span>(<span class="st">&#39;dashboard-page.png&#39;</span><span class="op">,</span> { maxDiffPixelRatio<span class="op">:</span> <span class="fl">0.05</span> })<span class="op">;</span></span></code></pre></div>
+<p>This compares the current page layout against a baseline image,
+catching visual regressions.</p>
+<h4
+id="q53-what-are-the-trade-offs-of-using-allure-reporting-over-playwrights-default-html-reporter">Q53:
+“What are the trade-offs of using Allure reporting over Playwright’s
+default HTML reporter?”</h4>
+<p>Allure provides advanced reporting features like historical trend
+analysis, category grouping, and step-by-step metric logging. However,
+it requires installing a Java environment to run its CLI generator,
+adding setup complexity compared to Playwright’s native HTML
+reporter.</p>
+<h4
+id="q54-how-does-your-loginpage-pom-handle-negative-credential-assertions">Q54:
+“How does your LoginPage POM handle negative credential
+assertions?”</h4>
+<p>The test passes different credential scenarios (like wrong passwords
+or locked accounts) to the <code>login()</code> method. It then calls
+<code>getErrorMessage()</code> to read the error text displayed on the
+screen, asserting that the message matches the expected validation
+error.</p>
+<h4 id="q55-how-does-your-framework-handle-cross-browser-testing">Q55:
+“How does your framework handle cross-browser testing?”</h4>
+<p>We define separate test configurations for Chromium and Firefox under
+the <code>projects</code> section of <code>playwright.config.ts</code>.
+When we run <code>npx playwright test</code>, Playwright automatically
+executes our test suites across both browsers.</p>
+<hr />
+<h3 id="trap-questions">9.4 Trap Questions</h3>
+<h4
+id="q56-what-is-the-difference-between-playwrights-locator-auto-waiting-and-a-custom-poller">Q56:
+“What is the difference between Playwright’s locator auto-waiting and a
+custom poller?”</h4>
+<p>Playwright’s auto-waiting is built into its action methods (like
+<code>click()</code> or <code>fill()</code>). It checks actionability
+criteria (such as visibility and clickability) on the element
+automatically before executing the action. A custom poller is a manual
+loop used to check generic conditions (like a database value changing or
+a file appearing on disk) that are not tied to browser DOM actions.</p>
+<h4
+id="q57-why-did-you-implement-a-local-state-synchronized-mock-database-instead-of-standard-api-intercepting">Q57:
+“Why did you implement a local state-synchronized mock database instead
+of standard API intercepting?”</h4>
+<p>Standard API intercepting (<code>page.route</code>) only intercepts
+requests initiated by the browser. It cannot catch backend queries sent
+directly by our Node-level API clients. By implementing a shared local
+mock database (<code>mockDb.ts</code>), we can synchronize data states
+between our API client and browser page routing, enabling realistic
+integration flows.</p>
+<h4
+id="q58-if-a-test-fails-in-your-sharded-ci-pipeline-can-you-download-the-failure-video-for-that-specific-shard">Q58:
+“If a test fails in your sharded CI pipeline, can you download the
+failure video for that specific shard?”</h4>
+<p>Yes. We configure <code>video: 'retain-on-failure'</code> in our
+<code>playwright.config.ts</code>. If a test fails, the worker records
+the failure video and saves it to the shard’s results directory. This is
+uploaded as a zip archive, allowing us to download and review the
+video.</p>
+<h4
+id="q59-does-your-apiclient-wrapper-perform-schema-validation-on-all-incoming-responses">Q59:
+“Does your ApiClient wrapper perform schema validation on all incoming
+responses?”</h4>
+<p>No. <code>ApiClient</code> is designed as a reusable wrapper that
+only sends requests and returns raw HTTP responses. The schema
+validation and latency checks are handled directly inside the test spec
+files or assertion helpers, keeping the API client highly decoupled.</p>
+<h4
+id="q60-what-happens-if-a-developer-imports-test-from-playwrighttest-instead-of-your-custom-fixtures-file">Q60:
+“What happens if a developer imports test from <span class="citation"
+data-cites="playwright/test">@playwright/test</span> instead of your
+custom fixtures file?”</h4>
+<p>The test will compile, but it will lose access to our
+pre-authenticated browser session (<code>authenticatedPage</code>) and
+automatic browser-routing interceptors. This will cause the test to fail
+on clean runners due to missing authentication states.</p>
+<h4
+id="q61-why-does-your-env.config.ts-file-export-a-const-object-cast-as-const">Q61:
+“Why does your env.config.ts file export a const object cast as
+const?”</h4>
+<p>Casting the object <code>as const</code> informs TypeScript that all
+configuration properties are read-only constants. This prevents tests
+from accidentally modifying our configuration parameters at runtime.</p>
+<h4
+id="q62-does-your-custom-retrywithbackoff-utility-run-on-failing-ui-locator-actions">Q62:
+“Does your custom retryWithBackoff utility run on failing UI locator
+actions?”</h4>
+<p>No. The retry utility is designed for async functions like API
+requests or database checks. Playwright already has built-in retries for
+UI locators, so wrapping them in a custom helper would cause redundant
+delays.</p>
+<h4
+id="q63-what-is-the-difference-between-a-flaky-test-and-a-broken-test">Q63:
+“What is the difference between a flaky test and a broken test?”</h4>
+<p>A broken test is a consistent failure caused by an application defect
+or a stale locator. A flaky test is an inconsistent result that passes
+or fails across different runs due to environmental issues like network
+latency or race conditions.</p>
+<h4
+id="q64-why-is-it-important-to-use-process.env.test_worker_index-in-your-authentication-fixture">Q64:
+“Why is it important to use process.env.TEST_WORKER_INDEX in your
+authentication fixture?”</h4>
+<p>It ensures that parallel workers do not collide when writing to
+session files. If multiple workers try to write to a single
+<code>user.json</code> file at the same time, it can cause file locks
+and flaky test failures. Using worker-specific paths completely isolates
+these sessions.</p>
+<h4
+id="q65-how-does-zods-safeparse-method-prevent-startup-crashes-in-your-local-configuration">Q65:
+“How does Zod’s safeParse method prevent startup crashes in your local
+configuration?”</h4>
+<p><code>safeParse</code> validates our environment variables without
+throwing runtime errors. Instead, it returns a success flag and any
+parsing errors in an object. This allows us to inspect all configuration
+errors at once and print a detailed summary before exiting.</p>
+<hr />
+<h2 id="failure-modes-limitations">10. Failure Modes &amp;
+Limitations</h2>
+<p>While highly resilient, this quality engineering framework has
+several known limitations that would need to be addressed in a
+real-world enterprise deployment:</p>
+<h3 id="in-memory-database-reset">1. In-Memory Database Reset</h3>
+<p>Our local database (<code>mockDb.ts</code>) is stored as an in-memory
+array that resets every time a test execution process starts. In
+complex, multi-stage integration tests that span separate runs, the
+database state is lost, limiting our ability to test long-running
+business flows.</p>
+<h3 id="ui-mock-styling-gaps">2. UI Mock Styling Gaps</h3>
+<p>Our browser mock router serves simple, unstyled HTML templates for
+our pages. While functional for locator validation, it does not render
+real CSS layouts or design elements, making it impossible to run visual
+regression checks.</p>
+<h3 id="lack-of-real-db-seeding">3. Lack of Real DB Seeding</h3>
+<p>The integration tests seed mock records using our local client,
+rather than connecting to a real database instance. This means we cannot
+catch issues like database schema constraints, index locks, or database
+performance bottlenecks.</p>
+<h3 id="no-accessibility-or-visual-checks">4. No Accessibility or Visual
+Checks</h3>
+<p>The framework lacks automated accessibility auditing (like
+<code>axe-playwright</code>) and visual regression verification (like
+Percy). This means structural accessibility regressions or pixel-level
+layout bugs could slip into production unnoticed.</p>
+<hr />
+<h2 id="glossary">11. Glossary</h2>
+<ul>
+<li><strong>Page Object Model (POM)</strong>: A design pattern that
+isolates page element selectors and user actions inside dedicated page
+classes, separating them from the test assertions.</li>
+<li><strong>Continuous Integration (CI)</strong>: An automated pipeline
+that builds, tests, and validates code changes every time a developer
+commits updates.</li>
+<li><strong>Sharding</strong>: The process of dividing a test suite
+across multiple parallel workers or virtual machines to reduce execution
+times.</li>
+<li><strong>Storage State</strong>: A Playwright feature that serializes
+browser session details (like cookies and local storage) to a JSON file,
+allowing subsequent runs to bypass login steps.</li>
+<li><strong>Zod Parsing</strong>: The process of validating a data
+object’s structure and types against an explicit schema template at
+runtime.</li>
+<li><strong>Element Intercepting</strong>: Catching browser network
+requests programmatically to mock or modify the returned data before it
+reaches the page.</li>
+<li><strong>Exponential Backoff</strong>: A retry strategy that doubles
+the delay duration on each successive failure, helping to prevent
+resource overload.</li>
+<li><strong>Flaky Test</strong>: A test that yields inconsistent results
+(passing or failing) across different runs without any changes to the
+code.</li>
+</ul>
+<hr />
+<h2 id="further-reading">12. Further Reading</h2>
+<h3 id="official-documentation">Official Documentation</h3>
+<ul>
+<li><a href="https://playwright.dev/docs/intro">Playwright official
+documentation</a></li>
+<li><a href="https://www.typescriptlang.org/docs/">TypeScript official
+handbook</a></li>
+<li><a href="https://zod.dev/">Zod official documentation</a></li>
+<li><a href="https://docs.github.com/en/actions">GitHub Actions official
+guide</a></li>
+<li><a href="https://allurereport.org/docs/">Allure Framework
+documentation</a></li>
+</ul>
+<h3 id="qe-architecture-resources">QE Architecture Resources</h3>
+<ul>
+<li><a href="https://playwright.dev/docs/network">Playwright Network
+Interception Guide</a></li>
+<li><a href="https://playwright.dev/docs/pom">Page Object Model Best
+Practices</a></li>
+<li><a href="https://playwright.dev/docs/test-sharding">Playwright
+Sharding and Parallelism</a></li>
+</ul>
+</body>
+</html>
